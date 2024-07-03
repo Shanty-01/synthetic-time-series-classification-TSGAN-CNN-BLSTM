@@ -1,3 +1,42 @@
+# Synthetic Time Series Classification
+Implementation of Time Series Generative Adversarial Network (TSGAN) in generating synthetic eye movement data. Also, the data augmentation was used to improve the performance of 1D CNN-BLSTM model classification with limited eye movement data.
+Thesis link [here](https://drive.google.com/file/d/1g4GeShLb0g26zf6gx_8s9kw6mNs_QT5Y/view?usp=sharing)
+## Modifications and Additions
+- Added TSGAN for synthetic eye movement data generation.
+- Created pseudolabel for the synthetic data.
+- Improved 1D CNN-BLSTM model for better performance in F1 macro.
+- Implement 1D FID to quantify synthetic data quality.
+The implementation of TSGAN is based on:
+1. **Conditional GAN for timeseries generation** - Kaleb E. Smith and Anthony O. Smith, 2020. DOI/Link: [link](https://www.semanticscholar.org/paper/Conditional-GAN-for-timeseries-generation-Smith-Smith/59044ad206640cb4f94992da787e25abe71372e7?utm_source=direct_link)
+2. **Generative adversarial networks for unbalanced fetal
+heart rate signal classification** - R. D. I. Puspitasari, M. A. Ma’sum, M. R. Alhamidi, K. Kurnianingsih,
+and W. Jatmiko, 2022. DOI/Link: [link](https://doi.org/10.1016/j.icte.2021.06.007)
+   
+## Dataset
+Data from the Bridge 2 video is used as the training data for the FID model. In the data augmentation and classification phases, onlytwo participants from the Bridge 2 video are selected, namely BBD bridge_2 and VVB bridge_2. The limited use of this data aimsto simulate the overfitting issue in eye movement classificationdue to the restricted amount of data. These data are chosen from a video with the highest number of smooth pursuit eyemovements, ensuring that the synthetically generated data canbe generalized for object selection in gaze gesture interaction based on smooth pursuit eye movements.
+
+## Usage 
+### Augmentation
+1. Input data in kaggle dataset
+2. Run TSGAN1 and TSGAN1 or use the trained models [here](https://www.semanticscholar.org/paper/Conditional-GAN-for-timeseries-generation-Smith-Smith/59044ad206640cb4f94992da787e25abe71372e7?utm_source=direct_link) to produce the synthetic BBD_bridge_2.arff and VVB_bridge_2.arff (each 10 files) in TSGAN2.ipnyb.
+### Get the best labelling model
+1. Train labelling model with the real data with limited epoch.
+2. use the labelling modell to label the synthetic data
+3. use the labelled data to train the TSTR model
+4. Increase the epoch of the labelling model and repeat step 2-3. repeat step 6 if the current validation macro F1 score > validation macro F1 score before (macro F1 score of the TSTR model).
+To-Do : Automate step 1-4
+### Train with and withoutt synthetic data
+1. Use labelling model to predict pseudolabels for the synthetic dataa.
+2. Train a model without synthetic data with varying validation data.
+### 1D FID
+1. To get the FID model, train model with real data, set --fid to True in the BLSTM_model_val.py. The output model to --model-root-path
+2. Run FID.py with input arff files which you wish to get the score between
+   
+## Result 
+![alt text](https://github.com/MikhailStartsev/deep_em_classifier/blob/master/figures/network.png "The macro F1 score from training the model with the addition of synthetic data versus without the addition of synthetic data.")
+## Discussion
+
+
 # Deep eye movement (EM) classifier: a 1D CNN-BLSTM model
 
 This is the implementation of the deep learning approach for eye movement classification from the "1D CNN with BLSTM for automated classification of fixations, saccades, and smooth pursuits" paper. If you use this code, please cite it as
